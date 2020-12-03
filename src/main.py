@@ -29,8 +29,12 @@ updateAnalog = "void update_analog() {\n\tfor(int v = 0; v < VOICES; v++) {\n"
 usesAnalog = False
 usesGyro = False
 maxdepth = 0
+fixArduinoMenu = False;
 
 def fix_arduino_menu_direction(menu):
+    global fixArduinoMenu
+    if not fixArduinoMenu:
+        return menu
     # Stupid things because how arduinomenu works
     # Reverse Menu
     menu = menu.split("{")

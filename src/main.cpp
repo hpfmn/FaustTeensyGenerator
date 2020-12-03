@@ -126,8 +126,8 @@ LiquidCrystal lcd(27, 28, 29, 30, 31, 32);
 
 #ifdef USECLICKENCODER
 // Encoder /////////////////////////////////////
-#define encA 2
-#define encB 3
+#define encA 3
+#define encB 2
 #define encBtn 5
 #define encSteps 4
 
@@ -166,20 +166,20 @@ float t_foff1 = 0;
 float t_osz1 = 0;
 prompt* osz1_data[]={
 	new menuValue<float>("Sine", 0),
-	new menuValue<float>("Noise", 4),
-	new menuValue<float>("Square", 3),
+	new menuValue<float>("Triangle", 1),
 	new menuValue<float>("Saw", 2),
-	new menuValue<float>("Triangle", 1)
+	new menuValue<float>("Square", 3),
+	new menuValue<float>("Noise", 4)
 };
 float t_vol1 = 0.5;
 float t_foff2 = 0;
 float t_osz2 = 0;
 prompt* osz2_data[]={
 	new menuValue<float>("Sine", 0),
-	new menuValue<float>("Noise", 4),
-	new menuValue<float>("Square", 3),
+	new menuValue<float>("Triangle", 1),
 	new menuValue<float>("Saw", 2),
-	new menuValue<float>("Triangle", 1)
+	new menuValue<float>("Square", 3),
+	new menuValue<float>("Noise", 4)
 };
 float t_vol2 = 0.5;
 float t_piamt = 0;
@@ -240,52 +240,52 @@ result updateFParam() {
 }
 prompt* p_AmpEnv[] = {
 	new menuField<float>(t_attack, "attack", "s", 0, 5, 0.01, 0, updateFParam,enterEvent, noStyle),
-	new Exit("<Back"),
-	new menuField<float>(t_sustain, "sustain", "%", 0.001, 1, 0.01, 0, updateFParam,enterEvent, noStyle),
+	new menuField<float>(t_decay, "decay", "s", 0, 5, 0.01, 0, updateFParam,enterEvent, noStyle),
 	new menuField<float>(t_release, "release", "s", 0, 5, 0.01, 0, updateFParam,enterEvent, noStyle),
-	new menuField<float>(t_decay, "decay", "s", 0, 5, 0.01, 0, updateFParam,enterEvent, noStyle)
+	new menuField<float>(t_sustain, "sustain", "%", 0.001, 1, 0.01, 0, updateFParam,enterEvent, noStyle),
+	new Exit("<Back")
 };
 menuNode &m_AmpEnv = *new menuNode("AmpEnv", sizeof(p_AmpEnv)/sizeof(prompt*), p_AmpEnv);
 prompt* p_Filter[] = {
 	new menuField<float>(t_filterfreq, "FilterFreq", "Hz", 0, 20000, 1000, 10, updateFParam,enterEvent, noStyle),
-	new Exit("<Back"),
-	new menuField<float>(t_li2fc, "li2fc", "", 0, 2000, 100, 0, updateFParam,enterEvent, noStyle),
-	new menuField<float>(t_gy2fc, "gy2fc", "", 0, 2000, 100, 0, updateFParam,enterEvent, noStyle),
+	new menuField<float>(t_filtergain, "FilterGain", "", 0, 1, 0.01, 0, updateFParam,enterEvent, noStyle),
 	new menuField<float>(t_q, "Q", "", 0, 50, 1, 0.01, updateFParam,enterEvent, noStyle),
-	new menuField<float>(t_filtergain, "FilterGain", "", 0, 1, 0.01, 0, updateFParam,enterEvent, noStyle)
+	new menuField<float>(t_gy2fc, "gy2fc", "", 0, 2000, 100, 0, updateFParam,enterEvent, noStyle),
+	new menuField<float>(t_li2fc, "li2fc", "", 0, 2000, 100, 0, updateFParam,enterEvent, noStyle),
+	new Exit("<Back")
 };
 menuNode &m_Filter = *new menuNode("Filter", sizeof(p_Filter)/sizeof(prompt*), p_Filter);
 prompt* p_Osc1[] = {
 	new menuField<float>(t_foff1, "foff1", "Hz", -12, 12, 1, 0.01, updateFParam,enterEvent, noStyle),
-	new Exit("<Back"),
+	new Menu::select<float>("osz1", t_osz1, sizeof(osz1_data)/sizeof(prompt*), osz1_data,updateFParam, exitEvent, wrapStyle),
 	new menuField<float>(t_vol1, "vol1", "", 0, 1.5, 0.1, 0, updateFParam,enterEvent, noStyle),
-	new Menu::select<float>("osz1", t_osz1, sizeof(osz1_data)/sizeof(prompt*), osz1_data,updateFParam, exitEvent, wrapStyle)
+	new Exit("<Back")
 };
 menuNode &m_Osc1 = *new menuNode("Osc1", sizeof(p_Osc1)/sizeof(prompt*), p_Osc1);
 prompt* p_Osc2[] = {
 	new menuField<float>(t_foff2, "foff2", "Hz", -12, 12, 1, 0.01, updateFParam,enterEvent, noStyle),
-	new Exit("<Back"),
+	new Menu::select<float>("osz2", t_osz2, sizeof(osz2_data)/sizeof(prompt*), osz2_data,updateFParam, exitEvent, wrapStyle),
 	new menuField<float>(t_vol2, "vol2", "", 0, 1.5, 0.1, 0, updateFParam,enterEvent, noStyle),
-	new Menu::select<float>("osz2", t_osz2, sizeof(osz2_data)/sizeof(prompt*), osz2_data,updateFParam, exitEvent, wrapStyle)
+	new Exit("<Back")
 };
 menuNode &m_Osc2 = *new menuNode("Osc2", sizeof(p_Osc2)/sizeof(prompt*), p_Osc2);
 prompt* p_PitchEnv[] = {
 	new menuField<float>(t_piamt, "PiAmt", "Hz", 0, 2000, 100, 0, updateFParam,enterEvent, noStyle),
-	new Exit("<Back"),
-	new menuField<float>(t_pisus, "PiSus", "%", 0.001, 1, 0.01, 0, updateFParam,enterEvent, noStyle),
-	new menuField<float>(t_pire, "PiRe", "s", 0, 5, 0.01, 0, updateFParam,enterEvent, noStyle),
+	new menuField<float>(t_piatt, "PiAtt", "s", 0, 5, 0.01, 0, updateFParam,enterEvent, noStyle),
 	new menuField<float>(t_pidec, "PiDec", "s", 0, 5, 0.01, 0, updateFParam,enterEvent, noStyle),
-	new menuField<float>(t_piatt, "PiAtt", "s", 0, 5, 0.01, 0, updateFParam,enterEvent, noStyle)
+	new menuField<float>(t_pire, "PiRe", "s", 0, 5, 0.01, 0, updateFParam,enterEvent, noStyle),
+	new menuField<float>(t_pisus, "PiSus", "%", 0.001, 1, 0.01, 0, updateFParam,enterEvent, noStyle),
+	new Exit("<Back")
 };
 menuNode &m_PitchEnv = *new menuNode("PitchEnv", sizeof(p_PitchEnv)/sizeof(prompt*), p_PitchEnv);
 prompt* p_FaustInstrument[] = {
 	&m_AmpEnv,
-	new menuField<int>(t_file_save, "save", "", 0, 127, 1, 0, save_to_sdcard, exitEvent, noStyle),
-	new menuField<int>(t_file_load, "load", "", 0, 127, 1, 0, load_from_sdcard, exitEvent, noStyle),
-	&m_PitchEnv,
-	&m_Osc2,
+	&m_Filter,
 	&m_Osc1,
-	&m_Filter
+	&m_Osc2,
+	&m_PitchEnv,
+	new menuField<int>(t_file_load, "load", "", 0, 127, 1, 0, load_from_sdcard, exitEvent, noStyle),
+	new menuField<int>(t_file_save, "save", "", 0, 127, 1, 0, save_to_sdcard, exitEvent, noStyle)
 };
 menuNode &myMenu = *new menuNode("FaustInstrument", sizeof(p_FaustInstrument)/sizeof(prompt*), p_FaustInstrument);
 
@@ -487,15 +487,19 @@ void setup() {
    audioController.volume(0.4);
 #endif
 
-   // MIDI.setHandleNoteOn(handleNoteOn);
-   // MIDI.setHandleNoteOff(handleNoteOff);
-   // MIDI.begin(MIDI_CHANNEL_OMNI);
+#ifdef HARDWAREMIDI
+   MIDI.setHandleNoteOn(handleNoteOn);
+   MIDI.setHandleNoteOff(handleNoteOff);
+   MIDI.begin(MIDI_CHANNEL_OMNI);
+#endif
 
+#ifdef USBHOSTMIDI
    myusb.begin();
    midi1.setHandleNoteOn(handleNoteOn);
    midi1.setHandleNoteOff(handleNoteOff);
    midi1.setHandlePitchChange(myPitchChange);
    midi1.setHandleControlChange(myControlChange);
+#endif
 
 
 #ifdef USECLICKENCODER
@@ -520,7 +524,9 @@ void setup() {
 #endif
 
    nav.idleTask=idle; //point a function to be used when menu is suspended
+#ifdef INVERTFIELDKEYS
    options->invertFieldKeys = true;
+#endif
 }
 
 void loop() { // Main loop
@@ -537,8 +543,11 @@ void loop() { // Main loop
    }
 #endif
 
+#ifdef USBHOSTMIDI
    myusb.Task();
    midi1.read();
+#endif
+
    // nav.doInput();
    nav.poll();
 
