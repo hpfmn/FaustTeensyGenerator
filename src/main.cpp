@@ -238,15 +238,15 @@ result updateFParam() {
 	}
 	return proceed;
 }
-prompt* p_AmpEnv[] = {
+prompt* p_ampenv[] = {
 	new menuField<float>(t_attack, "attack", "s", 0, 5, 0.01, 0, updateFParam,enterEvent, noStyle),
 	new menuField<float>(t_decay, "decay", "s", 0, 5, 0.01, 0, updateFParam,enterEvent, noStyle),
 	new menuField<float>(t_release, "release", "s", 0, 5, 0.01, 0, updateFParam,enterEvent, noStyle),
 	new menuField<float>(t_sustain, "sustain", "%", 0.001, 1, 0.01, 0, updateFParam,enterEvent, noStyle),
 	new Exit("<Back")
 };
-menuNode &m_AmpEnv = *new menuNode("AmpEnv", sizeof(p_AmpEnv)/sizeof(prompt*), p_AmpEnv);
-prompt* p_Filter[] = {
+menuNode &m_ampenv = *new menuNode("AmpEnv", sizeof(p_ampenv)/sizeof(prompt*), p_ampenv);
+prompt* p_filter[] = {
 	new menuField<float>(t_filterfreq, "FilterFreq", "Hz", 0, 20000, 1000, 10, updateFParam,enterEvent, noStyle),
 	new menuField<float>(t_filtergain, "FilterGain", "", 0, 1, 0.01, 0, updateFParam,enterEvent, noStyle),
 	new menuField<float>(t_q, "Q", "", 0, 50, 1, 0.01, updateFParam,enterEvent, noStyle),
@@ -254,22 +254,22 @@ prompt* p_Filter[] = {
 	new menuField<float>(t_li2fc, "li2fc", "", 0, 2000, 100, 0, updateFParam,enterEvent, noStyle),
 	new Exit("<Back")
 };
-menuNode &m_Filter = *new menuNode("Filter", sizeof(p_Filter)/sizeof(prompt*), p_Filter);
-prompt* p_Osc1[] = {
+menuNode &m_filter = *new menuNode("Filter", sizeof(p_filter)/sizeof(prompt*), p_filter);
+prompt* p_osc1[] = {
 	new menuField<float>(t_foff1, "foff1", "Hz", -12, 12, 1, 0.01, updateFParam,enterEvent, noStyle),
 	new Menu::select<float>("osz1", t_osz1, sizeof(osz1_data)/sizeof(prompt*), osz1_data,updateFParam, exitEvent, wrapStyle),
 	new menuField<float>(t_vol1, "vol1", "", 0, 1.5, 0.1, 0, updateFParam,enterEvent, noStyle),
 	new Exit("<Back")
 };
-menuNode &m_Osc1 = *new menuNode("Osc1", sizeof(p_Osc1)/sizeof(prompt*), p_Osc1);
-prompt* p_Osc2[] = {
+menuNode &m_osc1 = *new menuNode("Osc1", sizeof(p_osc1)/sizeof(prompt*), p_osc1);
+prompt* p_osc2[] = {
 	new menuField<float>(t_foff2, "foff2", "Hz", -12, 12, 1, 0.01, updateFParam,enterEvent, noStyle),
 	new Menu::select<float>("osz2", t_osz2, sizeof(osz2_data)/sizeof(prompt*), osz2_data,updateFParam, exitEvent, wrapStyle),
 	new menuField<float>(t_vol2, "vol2", "", 0, 1.5, 0.1, 0, updateFParam,enterEvent, noStyle),
 	new Exit("<Back")
 };
-menuNode &m_Osc2 = *new menuNode("Osc2", sizeof(p_Osc2)/sizeof(prompt*), p_Osc2);
-prompt* p_PitchEnv[] = {
+menuNode &m_osc2 = *new menuNode("Osc2", sizeof(p_osc2)/sizeof(prompt*), p_osc2);
+prompt* p_pitchenv[] = {
 	new menuField<float>(t_piamt, "PiAmt", "Hz", 0, 2000, 100, 0, updateFParam,enterEvent, noStyle),
 	new menuField<float>(t_piatt, "PiAtt", "s", 0, 5, 0.01, 0, updateFParam,enterEvent, noStyle),
 	new menuField<float>(t_pidec, "PiDec", "s", 0, 5, 0.01, 0, updateFParam,enterEvent, noStyle),
@@ -277,17 +277,17 @@ prompt* p_PitchEnv[] = {
 	new menuField<float>(t_pisus, "PiSus", "%", 0.001, 1, 0.01, 0, updateFParam,enterEvent, noStyle),
 	new Exit("<Back")
 };
-menuNode &m_PitchEnv = *new menuNode("PitchEnv", sizeof(p_PitchEnv)/sizeof(prompt*), p_PitchEnv);
-prompt* p_FaustInstrument[] = {
-	&m_AmpEnv,
-	&m_Filter,
-	&m_Osc1,
-	&m_Osc2,
-	&m_PitchEnv,
+menuNode &m_pitchenv = *new menuNode("PitchEnv", sizeof(p_pitchenv)/sizeof(prompt*), p_pitchenv);
+prompt* p_faustinstrument[] = {
+	&m_ampenv,
+	&m_filter,
+	&m_osc1,
+	&m_osc2,
+	&m_pitchenv,
 	new menuField<int>(t_file_load, "load", "", 0, 127, 1, 0, load_from_sdcard, exitEvent, noStyle),
 	new menuField<int>(t_file_save, "save", "", 0, 127, 1, 0, save_to_sdcard, exitEvent, noStyle)
 };
-menuNode &myMenu = *new menuNode("FaustInstrument", sizeof(p_FaustInstrument)/sizeof(prompt*), p_FaustInstrument);
+menuNode &myMenu = *new menuNode("FaustInstrument", sizeof(p_faustinstrument)/sizeof(prompt*), p_faustinstrument);
 
 void update_analog() {
 	for(int v = 0; v < VOICES; v++) {

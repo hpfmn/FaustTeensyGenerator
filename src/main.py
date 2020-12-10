@@ -31,6 +31,10 @@ usesGyro = False
 maxdepth = 0
 fixArduinoMenu = False;
 
+def variable_name(item_label):
+    label = item_label.replace(" ","_").replace("\t","_")
+    return f"{label.lower()}"
+
 def fix_arduino_menu_direction(menu):
     global fixArduinoMenu
     if not fixArduinoMenu:
@@ -54,7 +58,7 @@ def generateMenu(items, menulabel, top=True, cur_depth=1):
     if cur_depth > maxdepth:
         maxdepth += 1
 
-    menu = f'prompt* p_{menulabel}[] = {{\n'
+    menu = f'prompt* p_{variable_name(menulabel)}[] = {{\n'
 
     for item in items:
         print(item)
@@ -107,29 +111,29 @@ def generateMenu(items, menulabel, top=True, cur_depth=1):
             if skip:
                 continue
 
-            patch += f"\t&t_{item['label'].lower()},\n"
-            variables += f"float t_{item['label'].lower()} = {item['init']};\n"
+            patch += f"\t&t_{variable_name(item['label'])},\n"
+            variables += f"float t_{variable_name(item['label'])} = {item['init']};\n"
 
             if menu_data:
                 subprompt = ""
                 if cur_depth + 1 > maxdepth:
                     maxdepth = cur_depth + 1
 
-                subprompt += f"prompt* {item['label'].lower()}_data[]={{\n"
+                subprompt += f"prompt* {variable_name(item['label'])}_data[]={{\n"
                 for key, val in menu_data['menu'].items():
                     subprompt += f"\tnew menuValue<float>(\"{key}\", {val}),\n"
 
                 subprompt = fix_arduino_menu_direction(subprompt)
                 variables = variables + subprompt
                 variables = variables[:-2]+"\n};\n"
-                menu += f"\tnew Menu::select<float>(\"{item['label']}\", t_{item['label'].lower()}, sizeof({item['label'].lower()}_data)/sizeof(prompt*), {item['label'].lower()}_data,updateFParam, exitEvent, wrapStyle),\n"
+                menu += f"\tnew Menu::select<float>(\"{item['label']}\", t_{variable_name(item['label'])}, sizeof({variable_name(item['label'])}_data)/sizeof(prompt*), {variable_name(item['label'])}_data,updateFParam, exitEvent, wrapStyle),\n"
             else:
-                menu += f"\tnew menuField<float>(t_{item['label'].lower()}, \"{item['label']}\", \"{unit}\", {item['min']}, {item['max']}, {item['step']}, {fine}, updateFParam,enterEvent, noStyle),\n"
+                menu += f"\tnew menuField<float>(t_{variable_name(item['label'])}, \"{item['label']}\", \"{unit}\", {item['min']}, {item['max']}, {item['step']}, {fine}, updateFParam,enterEvent, noStyle),\n"
 
-            updateFunc += f"\t\tfi[v]->setParamValue(\"{item['label']}\", t_{item['label'].lower()});\n"
+            updateFunc += f"\t\tfi[v]->setParamValue(\"{item['label']}\", t_{variable_name(item['label'])});\n"
 
     for label in submenus:
-        menu += f"\t&m_{label},\n"
+        menu += f"\t&m_{variable_name(label)},\n"
 
     if top:
         variables += "int t_file_load = 0;\n"
@@ -151,9 +155,9 @@ def generateMenu(items, menulabel, top=True, cur_depth=1):
     menu = "".join(generated_submenus) + menu
 
     if top:
-        menu += f'menuNode &myMenu = *new menuNode("{menulabel}", sizeof(p_{menulabel})/sizeof(prompt*), p_{menulabel});\n'
+        menu += f'menuNode &myMenu = *new menuNode("{menulabel}", sizeof(p_{variable_name(menulabel)})/sizeof(prompt*), p_{variable_name(menulabel)});\n'
     else:
-        menu += f'menuNode &m_{menulabel} = *new menuNode("{menulabel}", sizeof(p_{menulabel})/sizeof(prompt*), p_{menulabel});\n'
+        menu += f'menuNode &m_{variable_name(menulabel)} = *new menuNode("{menulabel}", sizeof(p_{variable_name(menulabel)})/sizeof(prompt*), p_{variable_name(menulabel)});\n'
 
     return menu
 
