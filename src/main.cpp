@@ -38,7 +38,6 @@ MIDIDevice midi1(myusb);
 MIDI_CREATE_INSTANCE(HardwareSerial, MIDIPORT, MIDI);
 #endif
 
-
 result save_to_sdcard();
 result load_from_sdcard();
 const int chipSelect = BUILTIN_SDCARD;
@@ -490,7 +489,17 @@ void setup() {
 #ifdef HARDWAREMIDI
    MIDI.setHandleNoteOn(handleNoteOn);
    MIDI.setHandleNoteOff(handleNoteOff);
+   MIDI.setHandlePitchChange(myPitchChange);
+   MIDI.setHandleControlChange(myControlChange);
    MIDI.begin(MIDI_CHANNEL_OMNI);
+#endif
+
+#ifdef USBCLIENTMIDI
+   usbMIDI.setHandleNoteOn(handleNoteOn);
+   usbMIDI.setHandleNoteOff(handleNoteOff);
+   usbMIDI.setHandlePitchChange(myPitchChange);
+   usbMIDI.setHandleControlChange(myControlChange);
+   usbMIDI.begin();
 #endif
 
 #ifdef USBHOSTMIDI
@@ -500,7 +509,6 @@ void setup() {
    midi1.setHandlePitchChange(myPitchChange);
    midi1.setHandleControlChange(myControlChange);
 #endif
-
 
 #ifdef USECLICKENCODER
   clickEncoder.setAccelerationEnabled(true);
@@ -546,6 +554,14 @@ void loop() { // Main loop
 #ifdef USBHOSTMIDI
    myusb.Task();
    midi1.read();
+#endif
+
+#ifdef USBCLIENTMIDI
+   usbMIDI.read();
+#endif
+
+#ifdef HARDWAREMIDI
+   MIDI.read();
 #endif
 
    // nav.doInput();
