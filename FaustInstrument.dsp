@@ -1,10 +1,9 @@
-// sine.dsp
+// FaustInstrument.dsp
 // 
-// First example for Sound_Synthesis seminar.
+// Example for FaustTeensyGenerator
+// a simple subtractive synth with gyro and light control
 //
-// Henrik von Coler
-// 2020-04-21
-
+// Johannes Wegener
 
 
 import("stdfaust.lib");
